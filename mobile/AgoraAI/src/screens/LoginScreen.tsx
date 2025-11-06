@@ -10,12 +10,17 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-export default function LoginScreen() {
+export default function LoginScreen({setIsLoggedIn}: any) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    Alert.alert('Login pressed', `Email: ${email}`);
+    // Alert.alert('Login pressed', `Email: ${email}`);
+    // navigation.reset({
+    //   index: 0,
+    //   routes: [{ name: 'AppTabs' }],
+    // });
+    setIsLoggedIn(true);
   };
 
   return (
@@ -47,7 +52,8 @@ export default function LoginScreen() {
         onChangeText={setPassword}
       />
 
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+      // handleLogin 
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}> 
         <Text style={styles.loginText}>Login</Text>
       </TouchableOpacity>
 
