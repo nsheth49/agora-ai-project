@@ -8,19 +8,26 @@ import {
   Linking, 
   Alert 
 } from 'react-native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
+type RootStackParamList = {
+  Signup: undefined;
+  AppTabs: undefined;
+};
+
 export default function LoginScreen({setIsLoggedIn}: any) {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
     // Alert.alert('Login pressed', `Email: ${email}`);
-    // navigation.reset({
-    //   index: 0,
-    //   routes: [{ name: 'AppTabs' }],
-    // });
     setIsLoggedIn(true);
+    navigation.reset({
+        index: 0,
+        routes: [{ name: 'AppTabs' }],
+    });
   };
 
   return (
@@ -29,7 +36,7 @@ export default function LoginScreen({setIsLoggedIn}: any) {
 
       <Text style={styles.subtitle}>
         Login or Sign up{' '}
-        <Text style={styles.link} onPress={() => Linking.openURL('#')}>
+        <Text style={styles.link} onPress={() => navigation.navigate('Signup')}>
           here
         </Text>
       </Text>

@@ -1,18 +1,41 @@
+// import React from 'react';
+// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+// import { Text, View } from 'react-native';
+
+// const Tab = createBottomTabNavigator();
+
+// const Dummy = ({ name } : { name: string}) => (
+//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//       <Text>{name} Screen</Text>
+//     </View>
+// );
+
+// const AppTabs = () => (
+//   <Tab.Navigator initialRouteName="Home">
+//     <Tab.Screen name="Home" children={() => <Dummy name="Home" />} />  
+//     <Tab.Screen name="Chat" children={() => <Dummy name="Chat" />} />
+//     <Tab.Screen name="Profile" children={() => <Dummy name="Profile" />} />
+//   </Tab.Navigator>
+// );
+
+// export default AppTabs;
+
 import React from 'react';
+import { View, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text, View } from 'react-native';
+import HomeScreen from '../screens/HomeScreen'; // Import your actual home screen
 
 const Tab = createBottomTabNavigator();
 
 const Dummy = ({ name } : { name: string}) => (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>{name} Screen</Text>
-    </View>
+  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <Text>{name} Screen</Text>
+  </View>
 );
 
 const AppTabs = () => (
   <Tab.Navigator initialRouteName="Home">
-    <Tab.Screen name="Home" children={() => <Dummy name="Home" />} />  
+    <Tab.Screen name="Home" component={HomeScreen} />
     <Tab.Screen name="Chat" children={() => <Dummy name="Chat" />} />
     <Tab.Screen name="Profile" children={() => <Dummy name="Profile" />} />
   </Tab.Navigator>
