@@ -1,3 +1,7 @@
+/*
+Author: Eliza Gurung and Niket Sheth
+*/ 
+
 // @ts-ignore: no type declarations for react-native-vector-icons submodules
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import React from 'react';

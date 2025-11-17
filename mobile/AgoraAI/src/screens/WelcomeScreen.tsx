@@ -1,15 +1,7 @@
-// import React from 'react';
-// import { View, Text, Button } from 'react-native';
 
-// const WelcomeScreen = ({ navigation }: any) => (
-//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//       <text>Welcome to Agora AI!</text>
-//       <Button title="Login" onPress={() => navigation.navigate('Login')} />
-//       <Button title="Sign Up" onPress={() => navigation.navigate('Signup')} />
-//     </View>
-// );
-
-// export default WelcomeScreen;
+/*
+Author: Niket Sheth
+*/ 
 
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';

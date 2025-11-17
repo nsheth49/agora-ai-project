@@ -1,9 +1,51 @@
+/*
+Author: Eliza Gurung
+*/ 
+
+
 // @ts-ignore: no type declarations for react-native-vector-icons submodules
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar, FlatList, ScrollView, Modal } from 'react-native';
+import { ListRenderItem } from 'react-native';
 
-const demoComments = [
+// Type definitions
+interface Reply {
+  id: string;
+  user: string;
+  neighborhood: string;
+  time: string;
+  avatar: string;
+  text: string;
+}
+
+interface Comment {
+  id: string;
+  user: string;
+  neighborhood: string;
+  time: string;
+  avatar: string;
+  text: string;
+  replies?: Reply[];
+}
+
+interface Post {
+  id: string;
+  user: string;
+  neighborhood: string;
+  time: string;
+  avatar: string;
+  image?: string;
+  text: string;
+  upvotes: number;
+  downvotes: number;
+  comments: number;
+  aiSolution?: string;
+  upvoted: boolean;
+  downvoted: boolean;
+}
+
+const demoComments: Comment[] = [
   {
     id: '1',
     user: 'BadgersBabble',
@@ -24,7 +66,7 @@ const demoComments = [
   },
 ];
 
-const initialPosts = [
+const initialPosts: Post[] = [
   {
     id: '1',
     user: 'IceWrestlers',
@@ -59,10 +101,10 @@ const initialPosts = [
 
 const FeedScreen = () => {
   const statusBarHeight = Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0;
-  const [posts, setPosts] = useState(initialPosts);
-  const [selectedPost, setSelectedPost] = useState(null);
+  const [posts, setPosts] = useState<Post[]>(initialPosts);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  const handleThumb = (postId, type) => {
+  const handleThumb = (postId: string, type: 'up' | 'down'): void => {
     setPosts(posts =>
       posts.map(post => {
         if (post.id !== postId) return post;
@@ -91,8 +133,8 @@ const FeedScreen = () => {
     );
   };
 
-  const renderReplies = (replies) =>
-    replies?.map((reply) => (
+  const renderReplies = (replies: Reply[] | undefined) =>
+    replies?.map((reply: Reply) => (
       <View key={reply.id} style={styles.replyContainer}>
         <Image source={{ uri: reply.avatar }} style={styles.avatarSmall} />
         <View style={styles.replyContent}>
@@ -106,7 +148,7 @@ const FeedScreen = () => {
       </View>
     ));
 
-  const renderComment = ({ item }) => (
+  const renderComment: ListRenderItem<Comment> = ({ item }) => (
     <View style={styles.commentContainer}>
       <Image source={{ uri: item.avatar }} style={styles.avatar} />
       <View style={styles.commentContent}>
@@ -121,7 +163,7 @@ const FeedScreen = () => {
     </View>
   );
 
-  const renderFeedPost = ({ item, index }) => (
+  const renderFeedPost: ListRenderItem<Post> = ({ item, index }) => (
     <>
       <View style={styles.flatPost}>
         <View style={styles.postHeader}>
@@ -165,7 +207,9 @@ const FeedScreen = () => {
     </>
   );
 
-  const renderPostDetail = (post) => (
+  const renderPostDetail = (post: Post | undefined) => {
+    if (!post) return null;
+    return (
     <Modal visible={!!post} animationType="slide" transparent>
       <View style={styles.modalContainer}>
         <ScrollView style={{ backgroundColor: '#fff', borderRadius: 16, flex: 1 }} contentContainerStyle={{ paddingBottom: 32 }}>
@@ -230,7 +274,8 @@ const FeedScreen = () => {
         </ScrollView>
       </View>
     </Modal>
-  );
+    );
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: '#ffe22a' }}>
