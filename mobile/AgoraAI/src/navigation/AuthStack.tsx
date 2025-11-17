@@ -11,6 +11,7 @@ import SplashScreen from '../screens/SplashScreen';
 import AppTabs from './AppTabs'; // Import your bottom tabs navigator
 import AuthSecurityScreen from '../screens/AuthSecurityScreen';
 import MembershipScreen from '../screens/MembershipScreen';
+import LanguageScreen from '../screens/LanguageScreen';
 
 const Stack = createStackNavigator();
 
@@ -47,6 +48,11 @@ const AuthStack = ({ isLoggedIn, setIsLoggedIn }: { isLoggedIn: boolean, setIsLo
       <Stack.Screen name="AppTabs" component={AppTabs} />
       <Stack.Screen name="AuthSecurity" component={AuthSecurityScreen} />
       <Stack.Screen name="Membership" component={MembershipScreen} />
+      <Stack.Screen name="LanguageScreen">
+        {({ navigation }) => (
+          <LanguageScreen onBack={() => navigation.goBack()} />
+        )}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };

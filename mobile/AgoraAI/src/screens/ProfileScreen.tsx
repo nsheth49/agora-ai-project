@@ -31,6 +31,7 @@ type RootStackParamList = {
   Notifications: undefined;
   AIChatScreen: undefined;
   Membership: undefined;
+  LanguageScreen: undefined;
 };
 
 type ProfileScreenNavigationProp = NativeStackNavigationProp<
@@ -55,7 +56,7 @@ const menuOptions = [
     title: 'Language & Region',
     subtitle: 'Choose your region and preferred language',
     icon: 'lock',
-    isLocked: true,
+    isLocked: false,
   },
   {
     title: 'Membership',
@@ -115,6 +116,8 @@ const ProfileScreen = () => {
                         ? () => navigation.navigate('AuthSecurity')
                         : option.title === "Membership"
                         ? () => navigation.navigate('Membership')
+                        : option.title === "Language & Region"
+                        ? () => navigation.navigate('LanguageScreen')
                         : undefined
                     }
                   >

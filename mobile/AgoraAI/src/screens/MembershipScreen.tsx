@@ -16,9 +16,11 @@ import {
 } from 'react-native';
 // @ts-ignore
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useNavigation } from '@react-navigation/native';
 
 const MembershipScreen = () => {
   const statusBarHeight = Platform.OS === 'android' ? StatusBar.currentHeight ?? 0 : 0;
+  const navigation = useNavigation();
   const [annual, setAnnual] = useState(false);
 
   return (
@@ -78,6 +80,10 @@ const MembershipScreen = () => {
             {/* Payment Button */}
             <TouchableOpacity style={styles.paymentBtn}>
               <Text style={styles.paymentBtnText}>Proceed to Payment</Text>
+            </TouchableOpacity>
+            {/* Back Button */}
+            <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
+              <Text style={styles.backBtnText}>Back to Menu</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
@@ -233,6 +239,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     letterSpacing: 0.14,
   },
+  backBtn: {
+    backgroundColor: "#2370f2",
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginTop: 10,
+    minWidth: 220,
+    alignSelf: 'center',
+    width: '80%',
+  },
+  backBtnText: {
+    color: "#fff",
+    fontWeight: 'bold',
+    fontSize: 18,
+    letterSpacing: 0.14,
+  },
 });
 
 export default MembershipScreen;
+
