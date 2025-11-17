@@ -1,12 +1,14 @@
-
 /*
 Author: Niket Sheth
-*/ 
+*/
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, Keyboard, ScrollView } from 'react-native';
+import {
+  View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator,
+  Keyboard, ScrollView, Modal
+} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-// @ts-ignore: no type declarations for react-native-vector-icons submodules
+// @ts-ignore
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 interface ChatMessage {
@@ -14,13 +16,23 @@ interface ChatMessage {
   content: string;
 }
 
-// const BACKEND_API_URL = 'http://localhost:5000/api/gemini'; // Use your backend address
-const BACKEND_API_URL = 'http://10.0.2.2:5000/api/gemini'; // Use 10.0.2.2 for Android Emulator
+const SUGGESTION_LIST = [
+  "What's the new zoning law?",
+  "Local recycling schedule?",
+  "Climate Change",
+  "Upcoming community events?",
+  "Rules/laws"
+];
+
+const BACKEND_API_URL = 'http://10.0.2.2:5000/api/gemini';
 
 const AIChatScreen = () => {
   const [question, setQuestion] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showSheet, setShowSheet] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState(SUGGESTION_LIST);
 
   const getAIResponse = async (userQuestion: string) => {
     if (!userQuestion.trim()) return;
@@ -36,9 +48,7 @@ const AIChatScreen = () => {
         body: JSON.stringify({ question: userQuestion }),
       });
       const json = await result.json();
-      console.log(json); // log backend response for debugging
 
-      // Parse Gemini response from backend
       const aiText = json?.candidates?.[0]?.content?.parts?.[0]?.text;
       if (aiText) {
         setMessages(prev => [...prev, { role: 'ai', content: aiText.trim() }]);
@@ -46,7 +56,6 @@ const AIChatScreen = () => {
         setMessages(prev => [...prev, { role: 'ai', content: 'Sorry, there was a problem getting a response. Please try again.' }]);
       }
     } catch (error) {
-      console.log(error);
       setMessages(prev => [...prev, { role: 'ai', content: 'Error contacting AI service. Please try again later.' }]);
     }
     setLoading(false);
@@ -56,6 +65,11 @@ const AIChatScreen = () => {
     if (question.trim() && !loading) {
       getAIResponse(question);
     }
+  };
+
+  // Simulate refreshing suggestions
+  const handleRefresh = () => {
+    setSuggestions(prev => [...prev.slice(1), prev[0]]);
   };
 
   return (
@@ -77,13 +91,20 @@ const AIChatScreen = () => {
               msg.role === 'user' ? styles.userBubble : styles.aiBubble,
             ]}
           >
-            <Text style={msg.role === 'user' ? styles.userText : styles.aiText}>{msg.content}</Text>
+            <Text
+              style={[
+                msg.role === 'user' ? styles.userText : styles.aiText,
+                { flexShrink: 1, flexWrap: 'wrap' }
+              ]}
+            >
+              {msg.content}
+            </Text>
           </View>
         ))}
         {loading && <ActivityIndicator size="large" color="#FFD600" style={{ marginTop: 16 }} />}
       </ScrollView>
       <View style={styles.inputRow}>
-        <TouchableOpacity style={styles.plusButton} disabled={loading}>
+        <TouchableOpacity style={styles.plusButton} disabled={loading} onPress={() => setShowSheet(true)}>
           <AntDesign name="plus" size={24} color="#120c00" />
         </TouchableOpacity>
         <TextInput
@@ -103,6 +124,107 @@ const AIChatScreen = () => {
           <AntDesign name="arrowright" size={24} color="#120c00" />
         </TouchableOpacity>
       </View>
+      {/* Sheet: Camera/Photos/Files/Etc */}
+      <Modal
+        visible={showSheet}
+        transparent
+        animationType="slide"
+        statusBarTranslucent
+        onRequestClose={() => setShowSheet(false)}
+      >
+        <TouchableOpacity style={styles.sheetOverlay} activeOpacity={1} onPress={() => setShowSheet(false)} />
+        <View style={styles.sheetContainer}>
+          <View style={styles.sheetBar} />
+          <View style={styles.sheetRows}>
+            <TouchableOpacity style={styles.sheetIconBox}>
+              <MaterialIcons name="photo-camera" size={38} color="#232323" />
+              <Text style={styles.sheetIconLabel}>Camera</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.sheetIconBox}>
+              <MaterialIcons name="photo-library" size={38} color="#232323" />
+              <Text style={styles.sheetIconLabel}>Photos</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.sheetIconBox}>
+              <MaterialIcons name="insert-drive-file" size={38} color="#232323" />
+              <Text style={styles.sheetIconLabel}>Files</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={[styles.sheetList]}>
+            <TouchableOpacity
+              style={styles.sheetListItem}
+              onPress={() => {
+                setShowSheet(false);
+                setTimeout(() => setShowSuggestions(true), 350);
+              }}
+            >
+              <MaterialIcons name="edit" size={22} color="#222" style={{ marginRight: 10 }} />
+              <View>
+                <Text style={styles.sheetListTitle}>Generation (beta)</Text>
+                <Text style={styles.sheetListSub}>Auto create a question for me</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.sheetListItem}
+              onPress={() => {
+                setShowSheet(false);
+                setTimeout(() => setShowSuggestions(true), 350);
+              }}
+            >
+              <MaterialIcons name="wb-sunny" size={22} color="#222" style={{ marginRight: 10 }} />
+              <View>
+                <Text style={styles.sheetListTitle}>Suggestions</Text>
+                <Text style={styles.sheetListSub}>Generates a sample list of civics questions</Text>
+              </View>
+            </TouchableOpacity>
+            <View style={styles.sheetListItem}>
+              <MaterialIcons name="settings" size={22} color="#222" style={{ marginRight: 10 }} />
+              <View>
+                <Text style={styles.sheetListTitle}>Customization</Text>
+                <Text style={styles.sheetListSub}>Choose your preferences</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      {/* Suggestions Modal (matches your wireframe) */}
+      <Modal
+        visible={showSuggestions}
+        transparent
+        animationType="slide"
+        statusBarTranslucent
+        onRequestClose={() => setShowSuggestions(false)}
+      >
+        <TouchableOpacity style={styles.sheetOverlay} activeOpacity={1} onPress={() => setShowSuggestions(false)} />
+        <View style={styles.suggContainer}>
+          <View style={styles.suggBar} />
+          <View style={styles.suggInner}>
+            <View style={styles.suggSearchRow}>
+              <MaterialIcons name="search" size={22} color="#888" />
+              <Text style={styles.suggSearchPlaceholder}>Search from the below...</Text>
+            </View>
+            <View style={{ flexDirection: 'row', marginTop: 18, alignItems: 'center', justifyContent: 'space-between' }}>
+              <Text style={styles.tryAsking}>Try Asking..</Text>
+              <TouchableOpacity style={styles.suggRefresh} onPress={handleRefresh}>
+                <MaterialIcons name="refresh" size={26} color="#232323" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.suggChipsWrap}>
+              {suggestions.map((text, idx) => (
+                <TouchableOpacity
+                  key={idx}
+                  style={styles.suggChip}
+                  onPress={() => {
+                    setShowSuggestions(false);
+                    setTimeout(() => setQuestion(text), 200);
+                  }}
+                >
+                  <Text style={styles.suggChipText}>{text}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -140,8 +262,8 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     borderTopLeftRadius: 0,
   },
-  userText: { color: '#1976D2', fontSize: 16 },
-  aiText: { color: '#222', fontSize: 16 },
+  userText: { color: '#1976D2', fontSize: 16, flexShrink: 1, flexWrap: 'wrap' },
+  aiText: { color: '#222', fontSize: 16, flexShrink: 1, flexWrap: 'wrap' },
   inputRow: {
     flexDirection: 'row', alignItems: 'center',
     padding: 12, borderTopWidth: 1, borderColor: '#eee',
@@ -165,6 +287,159 @@ const styles = StyleSheet.create({
     borderRadius: 16, paddingVertical: 8, paddingHorizontal: 16,
     fontSize: 16, color: '#120c00',
   },
+  sheetOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(40,30,30,0.17)',
+  },
+  sheetContainer: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 26,
+    borderTopRightRadius: 26,
+    paddingHorizontal: 0,
+    paddingTop: 10,
+    paddingBottom: 11,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    elevation: 9,
+    shadowColor: '#111',
+    shadowOpacity: 0.11,
+    shadowRadius: 16,
+  },
+  sheetBar: {
+    width: 67,
+    height: 7,
+    backgroundColor: '#eee',
+    borderRadius: 6,
+    alignSelf: 'center',
+    marginTop: 4,
+    marginBottom: 22,
+  },
+  sheetRows: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    marginBottom: 18,
+    marginHorizontal: 0,
+  },
+  sheetIconBox: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#efefef',
+    borderRadius: 24,
+    width: 112,
+    height: 112,
+    marginHorizontal: 7,
+    shadowColor: '#000',
+    shadowOpacity: 0.09,
+    shadowRadius: 8,
+    elevation: 2
+  },
+  sheetIconLabel: {
+    fontSize: 16,
+    color: '#232323',
+    fontWeight: '600',
+    marginTop: 13,
+  },
+  sheetList: {
+    marginHorizontal: 15,
+    marginTop: 9,
+    marginBottom: 12,
+  },
+  sheetListItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 19,
+  },
+  sheetListTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#222',
+  },
+  sheetListSub: {
+    fontSize: 13,
+    color: '#888',
+    marginTop: 2,
+  },
+  // SUGGESTIONS SHEET
+  suggContainer: {
+    backgroundColor: "#f8f4fa",
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    paddingTop: 10,
+    paddingHorizontal: 0,
+    paddingBottom: 21,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    elevation: 10,
+    shadowColor: '#222',
+    shadowOpacity: 0.12,
+    shadowRadius: 19,
+  },
+  suggBar: {
+    width: 60,
+    height: 6,
+    backgroundColor: '#e7e3e3',
+    borderRadius: 5,
+    alignSelf: 'center',
+    marginVertical: 9,
+  },
+  suggInner: {
+    paddingHorizontal: 12,
+    paddingTop: 4,
+    paddingBottom: 10,
+  },
+  suggSearchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#eae3ef',
+    borderRadius: 22,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    marginBottom: 9,
+    marginTop: 3,
+  },
+  suggSearchPlaceholder: {
+    marginLeft: 12,
+    color: "#888",
+    fontSize: 17,
+    fontWeight: "500",
+    flex: 1,
+  },
+  tryAsking: {
+    fontWeight: "bold",
+    fontSize: 21,
+    color: "#161417",
+    marginBottom: 11,
+    marginTop: 9,
+  },
+  suggRefresh: {
+    marginRight: 7,
+    marginTop: 2,
+  },
+  suggChipsWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 7,
+    marginTop: 6,
+  },
+  suggChip: {
+    paddingVertical: 9,
+    paddingHorizontal: 17,
+    backgroundColor: "#e3e0e4",
+    borderRadius: 20,
+    alignSelf: 'flex-start',
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  suggChipText: {
+    fontSize: 15,
+    color: "#212121",
+    fontWeight: "600",
+  }
 });
 
 export default AIChatScreen;
