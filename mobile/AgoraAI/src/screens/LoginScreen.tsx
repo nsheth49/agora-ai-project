@@ -8,14 +8,26 @@ import {
   Linking, 
   Alert 
 } from 'react-native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-export default function LoginScreen() {
+type RootStackParamList = {
+  Signup: undefined;
+  AppTabs: undefined;
+};
+
+export default function LoginScreen({setIsLoggedIn}: any) {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    Alert.alert('Login pressed', `Email: ${email}`);
+    // Alert.alert('Login pressed', `Email: ${email}`);
+    setIsLoggedIn(true);
+    navigation.reset({
+        index: 0,
+        routes: [{ name: 'AppTabs' }],
+    });
   };
 
   return (
@@ -24,7 +36,7 @@ export default function LoginScreen() {
 
       <Text style={styles.subtitle}>
         Login or Sign up{' '}
-        <Text style={styles.link} onPress={() => Linking.openURL('#')}>
+        <Text style={styles.link} onPress={() => navigation.navigate('Signup')}>
           here
         </Text>
       </Text>
@@ -47,7 +59,8 @@ export default function LoginScreen() {
         onChangeText={setPassword}
       />
 
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+      // handleLogin 
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}> 
         <Text style={styles.loginText}>Login</Text>
       </TouchableOpacity>
 
