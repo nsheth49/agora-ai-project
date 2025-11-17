@@ -1,3 +1,8 @@
+
+/*
+Author: Niket Sheth and Eliza Gurung
+*/ 
+
 import React, { useState } from 'react';
 import {
   View,
@@ -14,6 +19,24 @@ import {
 } from 'react-native';
 // @ts-ignore: no type declarations for react-native-vector-icons submodules
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+// Define root navigator param list
+type RootStackParamList = {
+  Profile: undefined;
+  AuthSecurity: undefined;
+  Home: undefined;
+  Feed: undefined;
+  Notifications: undefined;
+  AIChatScreen: undefined;
+  Membership: undefined;
+};
+
+type ProfileScreenNavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  'Profile'
+>;
 
 const menuOptions = [
   {
@@ -26,7 +49,7 @@ const menuOptions = [
     title: 'Authentication & Security',
     subtitle: 'Add recovery email & phone number',
     icon: 'lock',
-    isLocked: true,
+    isLocked: false,
   },
   {
     title: 'Language & Region',
@@ -38,11 +61,12 @@ const menuOptions = [
     title: 'Membership',
     subtitle: 'View exclusive benefits & join today',
     icon: 'lock',
-    isLocked: true,
+    isLocked: false,
   },
 ];
 
 const ProfileScreen = () => {
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
   const statusBarHeight = Platform.OS === 'android' ? StatusBar.currentHeight ?? 0 : 0;
   const [showProfileForm, setShowProfileForm] = useState(false);
   const [firstName, setFirstName] = useState('Niket');
@@ -84,7 +108,15 @@ const ProfileScreen = () => {
                     key={option.title}
                     style={[styles.menuCard, i !== menuOptions.length - 1 && { marginBottom: 14 }]}
                     activeOpacity={0.8}
-                    onPress={option.title === "Profile" ? () => setShowProfileForm(true) : undefined}
+                    onPress={
+                      option.title === "Profile"
+                        ? () => setShowProfileForm(true)
+                        : option.title === "Authentication & Security"
+                        ? () => navigation.navigate('AuthSecurity')
+                        : option.title === "Membership"
+                        ? () => navigation.navigate('Membership')
+                        : undefined
+                    }
                   >
                     <View style={styles.menuIcon}>
                       <MaterialIcons name={option.icon} size={24} color="#232323" />

@@ -1,3 +1,8 @@
+
+/*
+Author: Niket Sheth and Rasmika Sathuluri
+*/ 
+
 import React, { useState } from 'react';
 import { 
   View, 

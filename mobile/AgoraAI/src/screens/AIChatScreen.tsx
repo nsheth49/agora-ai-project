@@ -1,3 +1,8 @@
+
+/*
+Author: Niket Sheth
+*/ 
+
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, Keyboard, ScrollView } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';

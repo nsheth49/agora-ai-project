@@ -1,4 +1,8 @@
 
+/*
+Author: Niket Sheth, Eliza Gurung
+*/ 
+
 import React from 'react';
 import { View, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -11,6 +15,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 //import { AntDesign } from '../types/react-native-vector-icons';
 // @ts-ignore: no type declarations for react-native-vector-icons submodules
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AuthSecurityScreen from '../screens/AuthSecurityScreen';
 
 
 
