@@ -9,7 +9,8 @@ interface ChatMessage {
   content: string;
 }
 
-const BACKEND_API_URL = 'http://localhost:5000/api/gemini'; // Use your backend address
+// const BACKEND_API_URL = 'http://localhost:5000/api/gemini'; // Use your backend address
+const BACKEND_API_URL = 'http://10.0.2.2:5000/api/gemini'; // Use 10.0.2.2 for Android Emulator
 
 const AIChatScreen = () => {
   const [question, setQuestion] = useState('');

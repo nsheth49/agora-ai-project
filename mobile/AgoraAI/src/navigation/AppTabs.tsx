@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen'; 
 import AIChatScreen from '../screens/AIChatScreen';
 import FeedScreen from '../screens/FeedScreen'; 
-import NotificationScreen from '../screens/NotificationsScreen'; 
+import NotificationsScreen from '../screens/NotificationsScreen'; 
 import ProfileScreen from '../screens/ProfileScreen'; 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 //import { AntDesign } from '../types/react-native-vector-icons';
@@ -63,10 +63,10 @@ const AppTabs = () => (
     })}
   >
     <Tab.Screen name="Home" component={HomeScreen} options={{headerShown: false}} />
-    <Tab.Screen name="Feed" children={() => <Dummy name="Feed" />} />
+    <Tab.Screen name="Feed" component={FeedScreen} options={{headerShown: false}} />
     <Tab.Screen name="AI Chat" component={AIChatScreen} options={{headerShown: false}} /> 
-    <Tab.Screen name="Notifications" children={() => <Dummy name="Notifications" />} />
-    <Tab.Screen name="Profile" children={() => <Dummy name="Profile" />} />
+    <Tab.Screen name="Notifications" component={NotificationsScreen} options={{headerShown: false}} />
+    <Tab.Screen name="Profile" component={ProfileScreen} options={{headerShown: false}} />
   </Tab.Navigator>
 );
 
