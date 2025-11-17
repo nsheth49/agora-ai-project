@@ -8,6 +8,7 @@ import FeedScreen from '../screens/FeedScreen';
 import NotificationsScreen from '../screens/NotificationsScreen'; 
 import ProfileScreen from '../screens/ProfileScreen'; 
 import AntDesign from 'react-native-vector-icons/AntDesign';
+//import { AntDesign } from '../types/react-native-vector-icons';
 // @ts-ignore: no type declarations for react-native-vector-icons submodules
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
